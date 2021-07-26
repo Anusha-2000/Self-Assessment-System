@@ -1,0 +1,103 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link
+      rel="shortcut icon"
+      href="{% static 'img/sritlogo.png' %}"
+      type="image/x-icon"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/snackbar.css' %}">
+
+    <style>
+        .logosrit {
+            height: 3em;
+        }
+    </style>
+
+    <title>SRIT</title>
+</head>
+
+<body style="background-color: rgb(231, 205, 157);">
+    <nav class="navbar navbar-expand-lg navbar- bg-" style="background-color: purple;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://srit-student-self-assesment.herokuapp.com/"><img class="logosrit" src="{% static 'img/sritlogo.png' %}" alt="Logo"></a>
+            <h3 class="text-primary">SRIT</h3>
+        </div>
+    </nav>
+    <div id="snackbar">
+        
+        {% if messages %}
+            {% for message in messages %}
+                {{message}}
+            {% endfor %}
+            <script>
+                // Get the snackbar DIV
+                var x = document.getElementById("snackbar");
+        
+                // Add the "show" class to DIV
+                x.className = "show";
+        
+                // After 3 seconds, remove the show class from DIV
+                setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+            </script>
+        {% endif %}
+            
+    </div>
+    <h1 class="text-center my-3">Login Here</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <form action="{% url 'login' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="user" class="form-label">Username</label>
+                        <input type="text" required class="form-control" id="user" name="user" placeholder="Username"
+                            aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="pass" class="form-label">Password</label>
+                        <input type="password" required class="form-control" name="pass" placeholder="Password"
+                            id="psw">
+                    </div>
+                    <div class="shps" style="margin: 0.5em;">
+                        Show Password: <input type="checkbox" name="showpass" id="showpass" onclick="showPass()"
+                            style="height: 12px;">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+                <div>
+                    <h6 class="text-center my-3">If you don't have an account <a href="{% url 'signup' %}">Click Here</a>
+                    </h6>
+                </div>
+            </div>
+            <div class="col-2"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous">
+        </script>
+    <script>
+        function showPass() {
+            var x = document.getElementById('psw');
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+    </script>
+</body>
+
+</html>

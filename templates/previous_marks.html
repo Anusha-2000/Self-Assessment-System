@@ -1,0 +1,304 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRIT</title>
+    <link rel="shortcut icon" href="{% static 'img/sritlogo.png' %}" type="image/x-icon" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/marks.css' %}">
+    <link rel="stylesheet" href="{% static 'css/snackbar.css' %}">
+
+    <style>
+        input.select-button {
+            margin-top: 1em;
+            border: 0px;
+            background-color: #5937a8;
+            color: white;
+            width: 4em;
+            height: 2em;
+        }
+
+        input.select-button:hover {
+            background-color: #7b43ff;
+        }
+
+        #sidebar ul p {
+            color: black;
+            padding: 10px;
+        }
+        input.pm-button{
+            margin-left: 0em;
+            margin-right: 1em;
+            margin-bottom: 1em;
+            float: right;
+        }
+        .sidebar-header h3 {
+            margin-left: 0em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- Sidebar Holder -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h3 class="sidebar-title">SRIT</h3>
+            </div>
+
+            <ul class="list-unstyled components">
+                <p style="font-size: 1.4em;"><b>Welcome {{user.username}}</b></p>
+                <li>
+                    <a href="{% url 'home' %}">Home</a>
+                </li>
+
+                <li class="active">
+                    <a href="#homeSubmenu2" data-toggle="collapse" aria-expanded="false">Marks</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu2">
+                        <li><a href="{% url 'previoussem' %}">Previous Semesters </a></li>
+                        <li><a href="{% url 'currentsem' %}">Current Semester</a></li>
+
+                    </ul>
+                </li>
+                <li class="active">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Activities</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+                        <li><a href="{% url 'academics' %}">Academics </a></li>
+                        <!-- <li><a href="#">Extra Curricular</a></li> -->
+
+                    </ul>
+                </li>
+                <li class="active">
+                    <a href="#homeSubmenu1" data-toggle="collapse" aria-expanded="false">Progress</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu1">
+                        <li><a href="{% url 'subjectwise' %}">Subject Wise</a></li>
+                        <li><a href="{% url 'overall' %}">Overall</a></li>
+
+                    </ul>
+                </li>
+                </li>
+
+                <li>
+                    <a href="{% url 'report' %}">Report</a>
+                </li>
+                <li>
+                    <a href="{% url 'suggestions' %}">Suggestions</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Page Content Holder -->
+        <div id="content">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+                            <i class="glyphicon glyphicon-align-left"></i>
+                            <span>DASHBOARD</span>
+                        </button>
+                        <h1 class="title">
+                            Marks
+                        </h1>
+                    </div>
+                    <div class="power" id="">
+                        <a href="{% url 'logout' %}"><i class="pbtn glyphicon glyphicon-off"></i></a>
+                    </div>
+                </div>
+            </nav>
+
+            <div id="snackbar">
+
+                {% if messages %}
+                {% for message in messages %}
+                {{message}}
+                {% endfor %}
+                <script>
+                    // Get the snackbar DIV
+                    var x = document.getElementById("snackbar");
+
+                    // Add the "show" class to DIV
+                    x.className = "show";
+
+                    // After 3 seconds, remove the show class from DIV
+                    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+                </script>
+                {% endif %}
+
+            </div>
+
+
+            <form action="{% url 'previoussemnumber' %}" method="post">
+                {% csrf_token %}
+                <h3>Select your Semester by clicking the select button</h3>
+                <div class="marks-dropdown">
+                    <select name="mdd" id="mdd">
+                        {% for i in sems %}
+
+                        {% if i == cs %}
+                        <option value="{{i}}" selected>Semester {{i}}</option>
+                        {% else %}
+                        <option value="{{i}}">Semester {{i}}</option>
+                        {% endif %}
+
+                        {% endfor %}
+                    </select>
+                    <input type="submit" value="Select" class="select-button">
+                </div>
+                <br>
+            </form>
+
+            <section class="marks-container">
+                <form action="{% url 'previoussem' %}" method="post" name="marks">
+                    {% csrf_token %}
+                    <table id="marks_table">
+                        <tr>
+                            <td style="background-color: #7b43ff;color:white;">
+                                <b> SUBJECT </b>
+                            </td>
+                            <td style="background-color: #7b43ff;color:white;">
+                                <b>INTERNAL</b>
+                            </td>
+                            <td style="background-color: #7b43ff;color:white;">
+                                <b>EXTERNAL</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{sub.s1}}
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="is1" value="{{i.s1}}">
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="es1" value="{{e.s1}}">
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                {{sub.s2}}
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="is2" value="{{i.s2}}">
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="es2" value="{{e.s2}}">
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                {{sub.s3}}
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="is3" value="{{i.s3}}">
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="es3" value="{{e.s3}}">
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                {{sub.s4}}
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="is4" value="{{i.s4}}">
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="es4" value="{{e.s4}}">
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                {{sub.s5}}
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="is5" value="{{i.s5}}">
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="es5" value="{{e.s5}}">
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                {{sub.s6}}
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="is6" value="{{i.s6}}">
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="es6" value="{{e.s6}}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{sub.s7}}
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="is7" value="{{i.s7}}">
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="es7" value="{{e.s7}}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{sub.s8}}
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="is8" value="{{i.s8}}">
+                            </td>
+                            <td>
+                                <input type="text" style="border:0px;background-color:white;font-size:1em;width:2em;"
+                                    name="es8" value="{{e.s8}}">
+                            </td>
+                        </tr>
+                    </table>
+                    <input type="submit" value="Save" class="pm-button">
+                </form>
+
+            </section>
+        </div>
+
+    </div>
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <!-- Bootstrap Js CDN -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+    </script>
+</body>
+
+</html>
